@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>VENOM</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial;
+        }
+
+        body {
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
+                url("images1.jpg");
+
+            background-size: cover;
+            background-position: center;
+        }
+
+        /* VIDEO BG */
+        .video-bg {
+            position: fixed;
+            inset: 0;
+            z-index: -2;
+        }
+
+        .video-bg video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.35) contrast(1.2);
+        }
+
+        /* subtle overlay */
+        .overlay {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            background: radial-gradient(circle at 60% 40%, rgba(255, 255, 255, 0.06), transparent 60%);
+        }
+
+        /* UI */
+        .container {
+            position: relative;
+            height: 100vh;
+            width: 100%;
+        }
+
+        .title {
+            position: absolute;
+            left: 7%;
+            top: 32%;
+            font-size: 84px;
+            letter-spacing: 8px;
+            color: #eaeaea;
+            text-shadow: 0 0 25px rgba(255, 255, 255, 0.25);
+        }
+
+        .subtitle {
+            position: absolute;
+            left: 7%;
+            top: 52%;
+            color: #9a9a9a;
+            letter-spacing: 2px;
+        }
+
+        .hint {
+            position: absolute;
+            left: 7%;
+            bottom: 8%;
+            color: #666;
+            font-size: 14px;
+        }
+
+        /* canvas on top */
+        canvas {
+            position: fixed;
+            inset: 0;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- VIDEO BACKGROUND -->
+    <div class="video-bg">
+        <video autoplay muted loop playsinline>
+            <source src="https://cdn.coverr.co/videos/coverr-dark-smoke-1592/1080p.mp4" type="video/mp4">
+        </video>
+    </div>
+    <div class="overlay"></div>
+
+    <div class="container">
+        <div class="title">VENOM</div>
+        <div class="subtitle">WE ARE VENOM</div>
+        <div class="hint">Move your mouse</div>
+    </div>
+
+    <!-- libs -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/gsap.min.js"></script>
+
+    <script>
+        /* ===== SCENE ===== */
+        const scene = new THREE.Scene();
+
+        const camera = new THREE.PerspectiveCamera(
+            60, window.innerWidth / window.innerHeight, 0.1, 1000
+        );
+        camera.position.z = 4;
+
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        /* ===== LIGHT ===== */
+        const key = new THREE.PointLight(0xffffff, 2);
+        key.position.set(2, 3, 5);
+        scene.add(key);
+
+        const fill = new THREE.AmbientLight(0x222222);
+        scene.add(fill);
+
+        /* ===== VENOM-LIKE OBJECT ===== */
+        /* جسم أسود لامع */
+        const geo = new THREE.IcosahedronGeometry(1.2, 2);
+        const mat = new THREE.MeshStandardMaterial({
+            color: 0x050505,
+            metalness: 1,
+            roughness: 0.15
+        });
+        const body = new THREE.Mesh(geo, mat);
+        scene.add(body);
+
+        /* عيون بيضا */
+        const eyeGeo = new THREE.SphereGeometry(0.35, 32, 32);
+        const eyeMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+
+        const eyeL = new THREE.Mesh(eyeGeo, eyeMat);
+        const eyeR = new THREE.Mesh(eyeGeo, eyeMat);
+
+        eyeL.position.set(-0.45, 0.2, 0.9);
+        eyeR.position.set(0.45, 0.2, 0.9);
+
+        body.add(eyeL);
+        body.add(eyeR);
+
+        /* ===== MOUSE INTERACTION ===== */
+        let targetX = 0, targetY = 0;
+
+        window.addEventListener("mousemove", (e) => {
+            targetX = (e.clientX / window.innerWidth - 0.5) * 2;
+            targetY = (e.clientY / window.innerHeight - 0.5) * 2;
+
+            gsap.to(body.rotation, {
+                y: targetX,
+                x: targetY,
+                duration: 0.8,
+                ease: "power3.out"
+            });
+        });
+
+        /* subtle breathing motion */
+        gsap.to(body.scale, {
+            x: 1.05, y: 1.05, z: 1.05,
+            duration: 1.2,
+            yoyo: true,
+            repeat: -1,
+            ease: "sine.inOut"
+        });
+
+        /* ===== INTRO ANIMATION ===== */
+        gsap.from(".title", { y: 80, opacity: 0, duration: 1.4, ease: "power4.out" });
+        gsap.from(".subtitle", { y: 40, opacity: 0, delay: 0.4, duration: 1.2 });
+
+        /* ===== LOOP ===== */
+        function animate() {
+            requestAnimationFrame(animate);
+            body.rotation.y += 0.002; // حركة خفيفة
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        /* ===== RESIZE ===== */
+        window.addEventListener("resize", () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
+
+</body>
+
+</html>
