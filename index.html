@@ -10,14 +10,14 @@
         .title-wrapper {
             position: absolute;
             top: 90px;
-            /* نزلناه لتحت عن البار */
+
             width: 100%;
             display: flex;
             justify-content: center;
             align-items: center;
         }
 
-        /* ===== TITLE ===== */
+
         .title-img {
             width: 520px;
             cursor: pointer;
@@ -26,13 +26,14 @@
             transition: 0.4s ease;
         }
 
-        /* Hover glow أبيض */
+
+
         .title-wrapper:hover .title-img {
             transform: scale(1.05);
             filter: drop-shadow(0 0 20px white) drop-shadow(0 0 40px rgba(255, 255, 255, 0.6));
         }
 
-        /* ===== SIDE IMAGES ===== */
+
         .side {
             position: absolute;
             width: 170px;
@@ -41,27 +42,29 @@
             transition: 0.5s ease;
 
             border-radius: 18px;
-            /* حواف ناعمة */
 
-            /* glow أبيض خفيف على الحواف */
+
+
             filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.8));
 
             transform: translateY(10px);
         }
 
-        /* left */
+
         .left {
             left: 22%;
             transform: translateX(-70px) translateY(10px);
         }
 
-        /* right */
+
+
+
         .right {
             right: 22%;
             transform: translateX(70px) translateY(10px);
         }
 
-        /* ===== HOVER SHOW ===== */
+
         .title-wrapper:hover .left {
             opacity: 1;
             transform: translateX(0) translateY(10px);
@@ -93,7 +96,7 @@
             background-attachment: fixed;
         }
 
-        /* ===== TOP TITLE (REAL 3D) ===== */
+
         .top-title img {
             width: 100%;
             max-width: 700px;
@@ -195,7 +198,7 @@
             box-shadow: 0 0 20px white;
         }
 
-        /* ===== الصور الأساسية ===== */
+
         .card::after {
             content: "";
             position: absolute;
@@ -215,7 +218,7 @@
             pointer-events: none;
         }
 
-        /* الشمال */
+
         .left-card::after {
             content: "";
             background: url("p1.png") center/cover;
@@ -231,7 +234,7 @@
             transition: 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
 
-        /* فوق */
+
         .top-card::after {
             background: url("p2.png") center/cover;
             top: -160px;
@@ -246,7 +249,7 @@
             transition: 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
 
-        /* اليمين */
+
         .right-card::after {
             background: url("p3.png") center/cover;
             right: -160px;
@@ -289,6 +292,11 @@
 
 
         }
+
+        .projects a {
+            text-decoration: none;
+            color: inherit;
+        }
     </style>
 </head>
 
@@ -319,9 +327,14 @@
     <section class="reveal">
         <h2 class="glow">Projects</h2>
         <div class="projects">
-            <div class="card left-card">Project 1</div>
+
+            <a href="venom.html">
+                <div class="card left-card">Project 1</div>
+            </a>
+
             <div class="card top-card">Project 2</div>
             <div class="card right-card">Project 3</div>
+
         </div>
     </section>
 
@@ -384,6 +397,8 @@
 
 
         });
+
+
     </script>
 
 </body>
