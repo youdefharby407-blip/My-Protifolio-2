@@ -34,8 +34,16 @@
 
         /* Apply animations */
         h1 {
-            opacity: 0;
-            animation: fadeDown 1s forwards;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: #fff;
+            text-shadow: 0 0 10px #ffffff;
+            transition: 0.3s;
+        }
+
+        h1:hover {
+            text-shadow: 0 0 25px #ffffff, 0 0 50px #ffffff;
+            transform: scale(1.05);
         }
 
         .profile {
