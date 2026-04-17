@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Cinematic Surfer</title>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+            background: black;
+            color: #ddd;
+            font-family: Arial;
+            overflow-x: hidden;
+        }
+
+        /* 🌌 STABLE STARS (fixed version) */
+
+
+        @keyframes moveStars {
+            from {
+                transform: translateY(0)
+            }
+
+            to {
+                transform: translateY(-1500px)
+            }
+        }
+
+        /* 🎬 INTRO */
+        #intro {
+            position: fixed;
+            inset: 0;
+            background: black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+            animation: fadeIntro 3s forwards;
+        }
+
+        #intro h1 {
+            font-size: 28px;
+            letter-spacing: 2px;
+            color: #ccc;
+        }
+
+        @keyframes fadeIntro {
+            0% {
+                opacity: 1
+            }
+
+            80% {
+                opacity: 1
+            }
+
+            100% {
+                opacity: 0;
+                visibility: hidden
+            }
+        }
+
+        /* sections */
+        section {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 60px;
+        }
+
+
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+
+
+
+
+
+        /* HERO */
+        .hero {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        /* 🧠 GLOBAL HOVER SYSTEM (IMPORTANT) */
+        .hover3d {
+            transition: 0.4s ease;
+            transform-style: preserve-3d;
+        }
+
+        .hover3d:hover {
+            transform: translateY(-5px) scale(1.02) rotateX(6deg) rotateY(6deg);
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+        }
+
+        /* TITLE */
+        h1 {
+            font-size: 52px;
+            margin-bottom: 50px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        /* side images */
+        .side {
+            position: absolute;
+            width: 110px;
+            top: -130px;
+            opacity: 0;
+            transition: 0.5s ease;
+            filter: blur(3px);
+        }
+
+        .left {
+            left: -160px
+        }
+
+        .right {
+            right: -160px
+        }
+
+        h1:hover .side {
+            opacity: 1;
+            filter: blur(0px);
+            transform: translateY(-10px);
+        }
+
+        /* HERO IMG */
+        .hero-img {
+            width: 320px;
+            margin-top: 10px;
+        }
+
+        /* ROW */
+        .row {
+            display: flex;
+            gap: 60px;
+            max-width: 1100px;
+            width: 100%;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .text {
+            width: 420px;
+            line-height: 2;
+            font-size: 20px;
+        }
+
+        /* BUTTON */
+        .btn {
+            padding: 15px 35px;
+            border: 1px solid white;
+            background: transparent;
+            color: white;
+            border-radius: 30px;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: white;
+            color: black;
+            box-shadow: 0 0 25px rgba(255, 255, 255, .3);
+        }
+
+        /* apply hover system to everything */
+        h1,
+        .card,
+        .hero-img,
+        .btn,
+        .text {
+            transition: 0.4s ease;
+        }
+
+        h1:hover,
+        .card:hover,
+        .hero-img:hover,
+        .btn:hover {
+            filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.35));
+        }
+
+        /* cards */
+        .card img {
+            width: 300px;
+            border-radius: 15px;
+            transition: 0.4s ease;
+        }
+
+
+        .card:hover img {
+            box-shadow: 0 0 25px rgba(255, 255, 255, 0.3);
+        }
+
+
+
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+
+        /* ✨ حركة حياة خفيفة */
+        .hero-img,
+        .card img {
+            animation: breathe 6s ease-in-out infinite;
+        }
+
+        @keyframes breathe {
+
+            0%,
+            100% {
+                transform: translateY(0px) scale(1) rotate(0deg);
+            }
+
+            50% {
+                transform: translateY(-16px) scale(1.02) rotate(0.5deg);
+            }
+        }
+
+        /* 🔥 glow ناعم */
+        .card img,
+        .hero-img {
+            transition: all 0.4s ease;
+        }
+
+        .card img:hover,
+        .hero-img:hover {
+            box-shadow: 0 0 35px rgba(255, 255, 255, 0.35);
+        }
+
+        /* 🧠 3D hover حقيقي */
+        .card,
+        .hero-img {
+            transform-style: preserve-3d;
+        }
+
+
+        .hero-img {
+            animation: breathe 7s ease-in-out infinite;
+        }
+
+        .card img:nth-child(1) {
+            animation: breathe 5s ease-in-out infinite;
+        }
+    </style>
+
+
+
+
+</head>
+
+<body>
+    <canvas id="bg"></canvas>
+
+    <!-- INTRO -->
+    <div id="intro">
+        <h1>Entering Cosmic Space...</h1>
+    </div>
+
+    <!-- STARS -->
+    <div class="stars"></div>
+
+    <!-- HERO -->
+    <section class="hero">
+
+        <h1 id="title">
+            Silver Surfer
+            <img class="side left" src="silver4.jpeg">
+            <img class="side right" src="silver5.jpeg">
+        </h1>
+
+        <img class="hero-img" src="silver1.jpeg">
+
+        <div class="text" id="about"></div>
+    </section>
+
+    <!-- SECTION 2 -->
+    <section>
+        <div class="row">
+            <div class="text" id="t1"></div>
+            <div class="card"><img src="silver2.jpeg"></div>
+        </div>
+    </section>
+
+    <!-- SECTION 3 -->
+    <section>
+        <div class="row">
+            <div class="card"><img src="silver3.jpeg"></div>
+            <div class="text" id="t2"></div>
+        </div>
+    </section>
+
+
+    <!-- CONTACT -->
+    <section>
+        <a href="contact.html">
+            <button class="btn hover3d">Contact Me</button>
+        </a>
+    </section>
+
+
+
+
+
+    <script>
+
+        /* typewriter clean */
+        function type(el, text) {
+            el.innerHTML = "";
+            let i = 0;
+            (function go() {
+                if (i < text.length) {
+                    el.innerHTML += text[i++];
+                    setTimeout(go, 20);
+                }
+            })();
+        }
+
+        /* scroll */
+        window.addEventListener("scroll", () => {
+
+            let about = document.getElementById("about");
+            let a = document.getElementById("t1");
+            let b = document.getElementById("t2");
+
+            // ✨ ABOUT (تحت الصورة)
+            let rect = about.getBoundingClientRect();
+
+            if (rect.top < innerHeight && rect.bottom > 0) {
+                if (!about.dataset.done) {
+                    type(about, "I'm Yousef, a creative web developer passionate about building cinematic and interactive websites that feel alive.");
+                    about.dataset.done = true;
+                }
+            } else {
+                about.innerHTML = "";
+                about.dataset.done = "";
+            }
+
+            // SECTION 2
+            if (a.getBoundingClientRect().top < innerHeight) {
+                if (!a.dataset.done) {
+                    type(a, "Cosmic energy flows through infinite galaxies, shaping worlds and bending reality beyond imagination. Every movement tells a story of power, mystery, and endless exploration across the universe.");
+                    a.dataset.done = true;
+                }
+            } else { a.innerHTML = ""; a.dataset.done = ""; }
+
+            // SECTION 3
+            if (b.getBoundingClientRect().top < innerHeight) {
+                if (!b.dataset.done) {
+                    type(b, "A legend born from sacrifice and cosmic power, traveling through space in search of balance and meaning. His journey reflects strength, solitude, and the weight of unimaginable responsibility.");
+                    b.dataset.done = true;
+                }
+            } else { b.innerHTML = ""; b.dataset.done = ""; }
+        });
+
+
+
+
+        /* 🌌 THREE JS REAL STARS */
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, innerWidth / innerHeight, 0.1, 1000);
+
+        const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById("bg") });
+        renderer.setSize(innerWidth, innerHeight);
+
+        const starsGeometry = new THREE.BufferGeometry();
+        const starsMaterial = new THREE.PointsMaterial({ color: 0xffffff, size: 1 });
+
+        const starsVertices = [];
+        for (let i = 0; i < 2000; i++) {
+            starsVertices.push((Math.random() - 0.5) * 2000);
+            starsVertices.push((Math.random() - 0.5) * 2000);
+            starsVertices.push((Math.random() - 0.5) * 2000);
+        }
+
+        starsGeometry.setAttribute('position', new THREE.Float32BufferAttribute(starsVertices, 3));
+        const stars = new THREE.Points(starsGeometry, starsMaterial);
+        scene.add(stars);
+
+        camera.position.z = 5;
+
+        function animate() {
+            requestAnimationFrame(animate);
+            stars.rotation.y += 0.0005;
+            stars.rotation.x += 0.0002;
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        /* 🧠 3D hover بالماوس */
+        document.querySelectorAll(".card, .hero-img").forEach(el => {
+            el.addEventListener("mousemove", (e) => {
+                const r = el.getBoundingClientRect();
+                let x = (e.clientX - r.left) / r.width;
+                let y = (e.clientY - r.top) / r.height;
+
+                let rotX = (0.5 - y) * 10;
+                let rotY = (x - 0.5) * 10;
+
+                el.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg)`;
+            });
+
+            el.addEventListener("mouseleave", () => {
+                el.style.transform = "rotateX(0deg) rotateY(0deg)";
+            });
+        });
+
+
+
+
+    </script>
+
+</body>
+
+</html>
